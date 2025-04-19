@@ -16,7 +16,7 @@ const ApiTester = () => {
 
       const config = {
         method: method,
-        url: "https://us-central1-your-project-id.cloudfunctions.net/apiTest", // This will be the URL of your Cloud Function
+        url: "http://localhost:5000/apiTest", // This will be the URL of your Cloud Function
         headers: headers ? JSON.parse(headers) : {},
         data: body ? JSON.parse(body) : {},
       };
