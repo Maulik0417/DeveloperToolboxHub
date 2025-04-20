@@ -58,7 +58,47 @@ const ApiTester = () => {
       return curl;
     };
 
+    const exportRequests = () => {
+      
+      const dataStr = JSON.stringify(history, null, 2);
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+    
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "api_requests.json";
+      link.click();
+    
+      URL.revokeObjectURL(url);
+    };
+
+    const importRequests = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+    
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (Array.isArray(imported)) {
+            const valid = imported.filter(req => req.url && req.url.startsWith("http"));
+            const updated = [...history, ...valid];
+            setHistory(updated);
+            localStorage.setItem("apiRequestHistory", JSON.stringify(updated));
+            alert("Requests imported successfully!");
+          }
+        } catch {
+          alert("Invalid file format");
+        }
+      };
+      reader.readAsText(file);
+    };
+
   const sendRequest = async () => {
+    if (!url || !url.startsWith("http")) {
+      alert("Please enter a valid URL (starting with http or https)");
+      return;
+    }
     const start = performance.now();
     try {
       setLoading(true);
@@ -109,6 +149,11 @@ const ApiTester = () => {
   return (
     <div style={{ padding: "1rem", maxWidth: "700px", margin: "0 auto" }}>
       <h2>REST API Tester</h2>
+
+      <label>
+        📤 Import Requests to add them to your history:
+        <input type="file" accept=".json" onChange={importRequests} />
+      </label>
 
       <div>
         <label>URL:</label>
@@ -213,6 +258,9 @@ const ApiTester = () => {
           style={{ marginBottom: "0.5rem" }}
         >
           📋 Copy curl command for current request
+        </button>
+        <button onClick={exportRequests}>
+          ⬇️ Export Requests
         </button>
           <SyntaxHighlighter language="json" style={oneDark}>
           {JSON.stringify(response.data, null, 2)}
