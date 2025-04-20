@@ -32,6 +32,32 @@ const ApiTester = () => {
       }
     };
 
+    const generateCurlCommand = () => {
+      let curl = `curl -X ${method}`;
+    
+      // Add headers
+      headers.forEach(({ key, value }) => {
+        if (key && value) {
+          curl += ` -H "${key}: ${value}"`;
+        }
+      });
+    
+      // Add body (only for applicable methods)
+      if (["POST", "PUT", "PATCH"].includes(method) && body) {
+        try {
+          const parsedBody = JSON.stringify(JSON.parse(body)); // sanitize formatting
+          curl += ` -d '${parsedBody}'`;
+        } catch {
+          // ignore malformed JSON
+        }
+      }
+    
+      // Add the URL
+      curl += ` "${url}"`;
+    
+      return curl;
+    };
+
   const sendRequest = async () => {
     const start = performance.now();
     try {
@@ -179,9 +205,19 @@ const ApiTester = () => {
           <button onClick={copyToClipboard} style={{ marginBottom: "0.5rem" }}>
           📋 Copy Response
           </button>
+          <button
+          onClick={() => {
+            const curl = generateCurlCommand();
+            navigator.clipboard.writeText(curl);
+          }}
+          style={{ marginBottom: "0.5rem" }}
+        >
+          📋 Copy curl command for current request
+        </button>
           <SyntaxHighlighter language="json" style={oneDark}>
           {JSON.stringify(response.data, null, 2)}
           </SyntaxHighlighter>
+          
         </div>
 
         
