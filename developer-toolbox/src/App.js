@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import ApiTester from "./components/ApiTester";
 import Home from "./components/Home";
+import RegexTester from "./components/RejexTester";
 
 function App() {
   return (
@@ -15,6 +16,9 @@ function App() {
         <li className="nav-item">
           <Link className="nav-link" to="/api-tester">REST API Tester</Link>
         </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/regex-tester">Regex Tester</Link> 
+        </li>
       </ul>
     </div>
   </div>
@@ -24,6 +28,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/api-tester" element={<ApiTester />} />
+            <Route path="/regex-tester" element={<RegexTester />} />
           </Routes>
         </div>
       </div>
