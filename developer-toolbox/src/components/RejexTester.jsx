@@ -8,9 +8,10 @@ const RegexTester = () => {
 
   const handleTestRegex = () => {
     try {
-      const re = new RegExp(regex);
+      // Ensure the regex is valid by adding the 'g' flag if not present
+      const re = new RegExp(regex, 'g');  // Adds the global flag by default
       const matches = testText.match(re);
-      setResult(matches);
+      setResult(matches || []);
       setError("");
     } catch (err) {
       setError("Invalid regular expression");
