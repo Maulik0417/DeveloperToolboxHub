@@ -33,6 +33,7 @@ const ApiTester = () => {
     };
 
   const sendRequest = async () => {
+    const start = performance.now();
     try {
       setLoading(true);
       setError("");
@@ -46,7 +47,15 @@ const ApiTester = () => {
       };
 
       const res = await axios(config);
-      setResponse(res);
+      const duration = performance.now() - start;
+      const sizeInBytes = JSON.stringify(res.data).length;
+
+      setResponse({
+      data: res.data,
+      status: res.status,
+      duration: Math.round(duration),
+      size: sizeInBytes,
+    });
     } catch (err) {
       const status = err.response?.status;
       const message = err.response?.data || err.message || "Request failed";
@@ -165,6 +174,8 @@ const ApiTester = () => {
       {response && (
         <div style={{ marginTop: "1rem", whiteSpace: "pre-wrap" }}>
           <h4>Response ({response.status}):</h4>
+          <p>Time: {response.duration} ms</p>
+          <p>Size: {response.size} bytes</p>
           <button onClick={copyToClipboard} style={{ marginBottom: "0.5rem" }}>
           📋 Copy Response
           </button>
