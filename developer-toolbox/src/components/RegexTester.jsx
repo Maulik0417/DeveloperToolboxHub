@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const RegexTester = () => {
   const [regex, setRegex] = useState("");
@@ -9,8 +9,18 @@ const RegexTester = () => {
   const [replacement, setReplacement] = useState("");
 const [replacedText, setReplacedText] = useState("");
 const [showModal, setShowModal] = useState(false);
+const [loadFromStorage, setLoadFromStorage] = useState(false);
   
-  
+useEffect(() => {
+  // Only load from localStorage if loadFromStorage is true
+  if (loadFromStorage) {
+    const savedRegex = localStorage.getItem("regexPattern");
+    const savedTestText = localStorage.getItem("testText");
+
+    if (savedRegex) setRegex(savedRegex);
+    if (savedTestText) setTestText(savedTestText);
+  }
+}, [loadFromStorage]); // Depend on loadFromStorage
 
   const toggleFlag = (flag) => {
     setFlags((prev) =>
@@ -47,6 +57,16 @@ const [showModal, setShowModal] = useState(false);
       setResult(null);
       setReplacedText("");
     }
+  };
+
+  const handleSave = () => {
+    localStorage.setItem("regexPattern", regex);
+    localStorage.setItem("testText", testText);
+    alert("Pattern and test case saved!");
+  };
+
+  const handleLoad = () => {
+    setLoadFromStorage(true); // Trigger loading from localStorage
   };
 
   return (
@@ -120,6 +140,14 @@ const [showModal, setShowModal] = useState(false);
       <button className="btn btn-primary" onClick={handleTestRegex}>
         Test Regex
       </button>
+
+      <button className="btn btn-secondary ms-2" onClick={handleSave}>
+        Save Regex
+      </button>
+      <button className="btn btn-warning ms-2" onClick={handleLoad}>
+        Load Regex
+      </button>
+
 
       {error && <div className="alert alert-danger mt-3">{error}</div>}
 
