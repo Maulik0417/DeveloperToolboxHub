@@ -10,6 +10,7 @@ const RegexTester = () => {
 const [replacedText, setReplacedText] = useState("");
 const [showModal, setShowModal] = useState(false);
 const [loadFromStorage, setLoadFromStorage] = useState(false);
+const [saveMessage, setSaveMessage] = useState("");
   
 useEffect(() => {
   // Only load from localStorage if loadFromStorage is true
@@ -62,11 +63,12 @@ useEffect(() => {
   const handleSave = () => {
     localStorage.setItem("regexPattern", regex);
     localStorage.setItem("testText", testText);
-    alert("Pattern and test case saved!");
+    setSaveMessage("Pattern and test case saved!");
+    setTimeout(() => setSaveMessage(""), 3000); // hide after 3s
   };
 
   const handleLoad = () => {
-    setLoadFromStorage(true); // Trigger loading from localStorage
+    setLoadFromStorage(true);
   };
 
   return (
@@ -228,6 +230,12 @@ useEffect(() => {
         </div>
       </div>
     </div>
+  </div>
+)}
+
+{saveMessage && (
+  <div className="alert alert-success mt-3" role="alert">
+    {saveMessage}
   </div>
 )}
 
