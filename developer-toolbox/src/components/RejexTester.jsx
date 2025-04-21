@@ -5,16 +5,22 @@ const RegexTester = () => {
   const [testText, setTestText] = useState("");
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
+  const [flags, setFlags] = useState("g");
+
+  const toggleFlag = (flag) => {
+    setFlags((prev) =>
+      prev.includes(flag) ? prev.replace(flag, "") : prev + flag
+    );
+  };
 
   const handleTestRegex = () => {
     try {
-      // Ensure the regex is valid by adding the 'g' flag if not present
-      const re = new RegExp(regex, 'g');  // Adds the global flag by default
+      const re = new RegExp(regex, flags);
       const matches = testText.match(re);
-      setResult(matches || []);
+      setResult(matches);
       setError("");
     } catch (err) {
-      setError("Invalid regular expression");
+      setError("Invalid regular expression or flags");
       setResult(null);
     }
   };
@@ -43,6 +49,50 @@ const RegexTester = () => {
           placeholder="Enter text here"
         />
       </div>
+
+      <div className="mb-3">
+  <label style={{ marginRight:'20px'}} className="form-label">Flags:</label>
+  <div className="form-check form-check-inline">
+    <input
+      className="form-check-input"
+      type="checkbox"
+      checked={flags.includes("g")}
+      onChange={() => toggleFlag("g")}
+      id="flagG"
+    />
+    <label className="form-check-label" htmlFor="flagG">g (global)</label>
+  </div>
+  <div className="form-check form-check-inline">
+    <input
+      className="form-check-input"
+      type="checkbox"
+      checked={flags.includes("i")}
+      onChange={() => toggleFlag("i")}
+      id="flagI"
+    />
+    <label className="form-check-label" htmlFor="flagI">i (ignore case)</label>
+  </div>
+  <div className="form-check form-check-inline">
+    <input
+      className="form-check-input"
+      type="checkbox"
+      checked={flags.includes("m")}
+      onChange={() => toggleFlag("m")}
+      id="flagM"
+    />
+    <label className="form-check-label" htmlFor="flagM">m (multiline)</label>
+  </div>
+  <div className="form-check form-check-inline">
+    <input
+      className="form-check-input"
+      type="checkbox"
+      checked={flags.includes("s")}
+      onChange={() => toggleFlag("s")}
+      id="flagS"
+    />
+    <label className="form-check-label" htmlFor="flagS">s (dotAll)</label>
+  </div>
+</div>
 
       <button className="btn btn-primary" onClick={handleTestRegex}>
         Test Regex
