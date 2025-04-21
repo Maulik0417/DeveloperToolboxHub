@@ -5,7 +5,7 @@ const Home = () => {
   return (
     <div className="container mt-5">
       <div className="text-center mb-5">
-        <h1 className="display-4 fw-bold">🧰 Developer Toolbox</h1>
+        <h1 className="display-4 fw-bold">Developer Toolbox</h1>
         <p className="lead">Your all-in-one hub for developer utilities and debugging tools.</p>
       </div>
 
