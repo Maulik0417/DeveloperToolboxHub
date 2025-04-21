@@ -20,13 +20,29 @@ const [showModal, setShowModal] = useState(false);
 
   const handleTestRegex = () => {
     try {
+      if (!regex) {
+        setError("Please enter a regular expression.");
+        setResult(null);
+        setReplacedText("");
+        return;
+      }
+  
       const re = new RegExp(regex, flags);
-      const matches = [...testText.matchAll(re)];
+      let matches = [];
+      
+      if (flags.includes("g")) {
+        matches = [...testText.matchAll(re)];
+      } else {
+        const match = testText.match(re);
+        if (match) matches.push(match);
+      }
+  
       const replaced = testText.replace(re, replacement);
       setResult(matches);
       setReplacedText(replaced);
       setError("");
     } catch (err) {
+      console.error(err);
       setError("Invalid regular expression");
       setResult(null);
       setReplacedText("");
@@ -75,48 +91,30 @@ const [showModal, setShowModal] = useState(false);
   />
 </div>
 
-      <div className="mb-3">
-  <label style={{ marginRight:'20px'}} className="form-label">Flags:</label>
-  <div className="form-check form-check-inline">
-    <input
-      className="form-check-input"
-      type="checkbox"
-      checked={flags.includes("g")}
-      onChange={() => toggleFlag("g")}
-      id="flagG"
-    />
-    <label className="form-check-label" htmlFor="flagG">g (global)</label>
-  </div>
-  <div className="form-check form-check-inline">
-    <input
-      className="form-check-input"
-      type="checkbox"
-      checked={flags.includes("i")}
-      onChange={() => toggleFlag("i")}
-      id="flagI"
-    />
-    <label className="form-check-label" htmlFor="flagI">i (ignore case)</label>
-  </div>
-  <div className="form-check form-check-inline">
-    <input
-      className="form-check-input"
-      type="checkbox"
-      checked={flags.includes("m")}
-      onChange={() => toggleFlag("m")}
-      id="flagM"
-    />
-    <label className="form-check-label" htmlFor="flagM">m (multiline)</label>
-  </div>
-  <div className="form-check form-check-inline">
-    <input
-      className="form-check-input"
-      type="checkbox"
-      checked={flags.includes("s")}
-      onChange={() => toggleFlag("s")}
-      id="flagS"
-    />
-    <label className="form-check-label" htmlFor="flagS">s (dotAll)</label>
-  </div>
+<div className="mb-3">
+  <label style={{ marginRight: '20px' }} className="form-label">Flags:</label>
+
+  {[
+    { flag: "g", label: "g (global)" },
+    { flag: "i", label: "i (ignore case)" },
+    { flag: "m", label: "m (multiline)" },
+    { flag: "s", label: "s (dotAll)" },
+    { flag: "u", label: "u (unicode)" },
+    { flag: "y", label: "y (sticky)" }
+  ].map(({ flag, label }) => (
+    <div key={flag} className="form-check form-check-inline">
+      <input
+        className="form-check-input"
+        type="checkbox"
+        checked={flags.includes(flag)}
+        onChange={() => toggleFlag(flag)}
+        id={`flag${flag.toUpperCase()}`}
+      />
+      <label className="form-check-label" htmlFor={`flag${flag.toUpperCase()}`}>
+        {label}
+      </label>
+    </div>
+  ))}
 </div>
 
       <button className="btn btn-primary" onClick={handleTestRegex}>
