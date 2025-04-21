@@ -6,6 +6,9 @@ const RegexTester = () => {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [flags, setFlags] = useState("g");
+  const [replacement, setReplacement] = useState("");
+const [replacedText, setReplacedText] = useState("");
+  
   
 
   const toggleFlag = (flag) => {
@@ -18,11 +21,14 @@ const RegexTester = () => {
     try {
       const re = new RegExp(regex, flags);
       const matches = [...testText.matchAll(re)];
+      const replaced = testText.replace(re, replacement);
       setResult(matches);
+      setReplacedText(replaced);
       setError("");
     } catch (err) {
       setError("Invalid regular expression");
       setResult(null);
+      setReplacedText("");
     }
   };
 
@@ -50,6 +56,17 @@ const RegexTester = () => {
           placeholder="Enter text here"
         />
       </div>
+
+      <div className="mb-3">
+  <label className="form-label">Replacement String (optional):</label>
+  <input
+    type="text"
+    className="form-control"
+    value={replacement}
+    onChange={(e) => setReplacement(e.target.value)}
+    placeholder="Enter replacement string"
+  />
+</div>
 
       <div className="mb-3">
   <label style={{ marginRight:'20px'}} className="form-label">Flags:</label>
@@ -118,6 +135,12 @@ const RegexTester = () => {
         )}
       </div>
     ))}
+  </div>
+)}
+{replacement && replacedText && (
+  <div className="mt-3">
+    <h4>Replaced Text:</h4>
+    <pre>{replacedText}</pre>
   </div>
 )}
     </div>
