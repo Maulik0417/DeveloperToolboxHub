@@ -8,6 +8,7 @@ const RegexTester = () => {
   const [flags, setFlags] = useState("g");
   const [replacement, setReplacement] = useState("");
 const [replacedText, setReplacedText] = useState("");
+const [showModal, setShowModal] = useState(false);
   
   
 
@@ -33,8 +34,12 @@ const [replacedText, setReplacedText] = useState("");
   };
 
   return (
-    <div className="container mt-4">
+    
+    <div className="container mt-4" >
       <h2>Regex Tester</h2>
+      <button className="btn btn-outline-info" onClick={() => setShowModal(true)}>
+    Syntax Help
+  </button>
       <div className="mb-3">
         <label className="form-label">Regular Expression:</label>
         <input
@@ -45,6 +50,8 @@ const [replacedText, setReplacedText] = useState("");
           placeholder="Enter regex here"
         />
       </div>
+
+      
 
       <div className="mb-3">
         <label className="form-label">Text to Test:</label>
@@ -143,6 +150,61 @@ const [replacedText, setReplacedText] = useState("");
     <pre>{replacedText}</pre>
   </div>
 )}
+
+
+{showModal && (
+  <div className="modal d-block" tabIndex="-1" style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+    <div className="modal-dialog modal-lg">
+      <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title">Regex Syntax Help</h5>
+          <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+        </div>
+        <div className="modal-body">
+        <h6>Common Syntax</h6>
+          <ul>
+            <li><code>.</code> — Any character except newline</li>
+            <li><code>\d</code> — Digit (0–9)</li>
+            <li><code>\w</code> — Word character (a-z, A-Z, 0-9, _)</li>
+            <li><code>\s</code> — Whitespace</li>
+            <li><code>[abc]</code> — Any of a, b, or c</li>
+            <li><code>[^abc]</code> — Not a, b, or c</li>
+            <li><code>a*</code> — 0 or more a's</li>
+            <li><code>a+</code> — 1 or more a's</li>
+            <li><code>a?</code> — 0 or 1 a</li>
+            <li><code>(abc)</code> — Capturing group</li>
+            <li><code>a|b</code> — a or b</li>
+            <li><code>^</code> — Start of string</li>
+            <li><code>$</code> — End of string</li>
+          </ul>
+
+          <h6 className="mt-4">Regex Flags</h6>
+          <ul>
+            <li><code>g</code> — Global search (find all matches, not just the first)</li>
+            <li><code>i</code> — Case-insensitive search</li>
+            <li><code>m</code> — Multi-line mode (<code>^</code> and <code>$</code> match start/end of lines)</li>
+            <li><code>s</code> — Allows <code>.</code> to match newline characters</li>
+            <li><code>u</code> — Treat pattern as a sequence of Unicode code points</li>
+            <li><code>y</code> — Sticky matching (matches starting at the current position only)</li>
+          </ul>
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Cheatsheet"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View full MDN Regex Cheatsheet
+          </a>
+        </div>
+        <div className="modal-footer">
+          <button className="btn btn-secondary" onClick={() => setShowModal(false)}>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
 
     
