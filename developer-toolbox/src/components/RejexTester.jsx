@@ -6,6 +6,7 @@ const RegexTester = () => {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [flags, setFlags] = useState("g");
+  
 
   const toggleFlag = (flag) => {
     setFlags((prev) =>
@@ -16,11 +17,11 @@ const RegexTester = () => {
   const handleTestRegex = () => {
     try {
       const re = new RegExp(regex, flags);
-      const matches = testText.match(re);
+      const matches = [...testText.matchAll(re)];
       setResult(matches);
       setError("");
     } catch (err) {
-      setError("Invalid regular expression or flags");
+      setError("Invalid regular expression");
       setResult(null);
     }
   };
@@ -100,17 +101,28 @@ const RegexTester = () => {
 
       {error && <div className="alert alert-danger mt-3">{error}</div>}
 
-      {result && (
-        <div className="mt-3">
-          <h4>Matches:</h4>
-          {result.length > 0 ? (
-            <pre>{JSON.stringify(result, null, 2)}</pre>
-          ) : (
-            <p>No matches found.</p>
-          )}
-        </div>
-      )}
+      {result && result.length > 0 && (
+  <div className="mt-3">
+    <h4>Matches:</h4>
+    {result.map((match, i) => (
+      <div key={i} className="mb-2">
+        <strong>Match {i + 1}:</strong> {match[0]}
+        {match.length > 1 && (
+          <ul>
+            {match.slice(1).map((group, idx) => (
+              <li key={idx}>
+                Group {idx + 1}: {group || <em>(no match)</em>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    ))}
+  </div>
+)}
     </div>
+
+    
   );
 };
 
