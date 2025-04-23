@@ -1,81 +1,192 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-const decodeBase64Url = (str) => { try { const base64 = str.replace(/-/g, "+").replace(/_/g, "/"); const json = atob(base64); return JSON.stringify(JSON.parse(json), null, 2); } catch { return null; } };
+const JwtDecoder = () => {
+  const [jwt, setJwt] = useState('');
+  const [decoded, setDecoded] = useState(null);
+  const [error, setError] = useState('');
+  const [copyMessage, setCopyMessage] = useState('');
+  const [expectedClaims, setExpectedClaims] = useState({
+    iss: '',
+    aud: ''
+  });
 
-const copyToClipboard = (text) => { navigator.clipboard.writeText(text).then(() => { alert("Copied to clipboard!"); }); };
-
-const JwtDecoder = () => { const [token, setToken] = useState(""); const [header, setHeader] = useState(""); const [payload, setPayload] = useState(""); const [signature, setSignature] = useState(""); const [error, setError] = useState(""); const [expired, setExpired] = useState(false);
-
-const handleDecode = (value) => { setToken(value); setError(""); setExpired(false); setHeader(""); setPayload(""); setSignature("");
-
-if (!value) return;
-
-const parts = value.trim().split(".");
-if (parts.length !== 3) {
-  setError("Invalid JWT format. Expected 3 parts separated by dots.");
-  return;
-}
-
-const [headerPart, payloadPart, sig] = parts;
-const decodedHeader = decodeBase64Url(headerPart);
-const decodedPayload = decodeBase64Url(payloadPart);
-
-if (!decodedHeader || !decodedPayload) {
-  setError("Could not decode Base64 content.");
-  return;
-}
-
-setHeader(decodedHeader);
-setPayload(decodedPayload);
-setSignature(sig);
-
-try {
-  const payloadObj = JSON.parse(atob(payloadPart.replace(/-/g, "+").replace(/_/g, "/")));
-  if (payloadObj.exp) {
-    const currentTime = Math.floor(Date.now() / 1000);
-    if (payloadObj.exp < currentTime) {
-      setExpired(true);
+  const base64UrlDecode = (str) => {
+    let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = base64.length % 4;
+    if (pad) {
+      base64 += '='.repeat(4 - pad);
     }
-  }
-} catch (e) {
-  setError("Invalid payload structure.");
-}
+    return atob(base64);
+  };
 
+  const decodeJwt = (token) => {
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      setError('Invalid JWT format. It must have 3 parts.');
+      return;
+    }
+
+    try {
+      const [header, payload, signature] = parts;
+      const decodedHeader = JSON.parse(base64UrlDecode(header));
+      const decodedPayload = JSON.parse(base64UrlDecode(payload));
+
+      const expirationDate = decodedPayload.exp
+        ? new Date(decodedPayload.exp * 1000).toLocaleString()
+        : null;
+
+      setDecoded({
+        header: decodedHeader,
+        payload: decodedPayload,
+        expirationDate,
+        signature
+      });
+      setError('');
+    } catch (err) {
+      setError('Failed to decode JWT. Please check the token format.');
+    }
+  };
+
+  const handleChange = (e) => {
+    setJwt(e.target.value);
+  };
+
+  const handleDecode = () => {
+    decodeJwt(jwt);
+  };
+
+  const handleClaimValidation = (claim, value) => {
+    if (decoded) {
+      return decoded.payload[claim] === value;
+    }
+    return false;
+  };
+
+  const handleCopy = (data) => {
+    navigator.clipboard.writeText(data).then(() => {
+      setCopyMessage('Copied to clipboard!');
+      setTimeout(() => setCopyMessage(''), 2000);
+    });
+  };
+
+  const handleCompact = () => {
+    if (decoded) {
+      const header = btoa(JSON.stringify(decoded.header))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+      const payload = btoa(JSON.stringify(decoded.payload))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+      return `${header}.${payload}.${decoded.signature}`;
+    }
+    return '';
+  };
+
+  return (
+    <div className="container mt-5">
+      <h2>🔑 JWT Decoder</h2>
+      <div className="form-group">
+        <label htmlFor="jwt-input">Enter JWT Token:</label>
+        <input
+          type="text"
+          className="form-control"
+          id="jwt-input"
+          value={jwt}
+          onChange={handleChange}
+          placeholder="Paste your JWT here"
+        />
+        <button onClick={handleDecode} className="btn btn-primary mt-3">
+          Decode JWT
+        </button>
+      </div>
+
+      {error && <div className="alert alert-danger mt-3">{error}</div>}
+
+      {decoded && (
+        <div className="mt-4">
+          <h4>Decoded JWT:</h4>
+          <div>
+            <h5>Header:</h5>
+            <pre>{JSON.stringify(decoded.header, null, 2)}</pre>
+            <button
+              className="btn btn-secondary"
+              onClick={() => handleCopy(JSON.stringify(decoded.header, null, 2))}
+            >
+              Copy Header
+            </button>
+          </div>
+
+          <div className="mt-4">
+            <h5>Payload:</h5>
+            <pre>{JSON.stringify(decoded.payload, null, 2)}</pre>
+            <button
+              className="btn btn-secondary"
+              onClick={() => handleCopy(JSON.stringify(decoded.payload, null, 2))}
+            >
+              Copy Payload
+            </button>
+          </div>
+
+          <div className="mt-4">
+            <h5>Expiration:</h5>
+            {decoded.expirationDate ? (
+              <p>{`Expires on: ${decoded.expirationDate}`}</p>
+            ) : (
+              <p>No expiration date available.</p>
+            )}
+          </div>
+
+          {copyMessage && <div className="alert alert-success mt-3">{copyMessage}</div>}
+
+          <div className="mt-4">
+            <h5>Compact Token:</h5>
+            <pre>{handleCompact()}</pre>
+          </div>
+
+          <div className="mt-4">
+            <h5>Validate Claims:</h5>
+            <div>
+              <label>Expected Issuer (iss):</label>
+              <input
+                type="text"
+                className="form-control"
+                value={expectedClaims.iss}
+                onChange={(e) =>
+                  setExpectedClaims({ ...expectedClaims, iss: e.target.value })
+                }
+                placeholder="Issuer (iss)"
+              />
+              {handleClaimValidation('iss', expectedClaims.iss) ? (
+                <p className="text-success">Issuer matches</p>
+              ) : (
+                <p className="text-danger">Issuer does not match</p>
+              )}
+            </div>
+
+            <div className="mt-3">
+              <label>Expected Audience (aud):</label>
+              <input
+                type="text"
+                className="form-control"
+                value={expectedClaims.aud}
+                onChange={(e) =>
+                  setExpectedClaims({ ...expectedClaims, aud: e.target.value })
+                }
+                placeholder="Audience (aud)"
+              />
+              {handleClaimValidation('aud', expectedClaims.aud) ? (
+                <p className="text-success">Audience matches</p>
+              ) : (
+                <p className="text-danger">Audience does not match</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
-
-return ( <div className="container mt-5"> <h2 className="mb-3">🔐 JWT Decoder</h2> <textarea className="form-control mb-3" placeholder="Paste JWT here..." rows={4} value={token} onChange={(e) => handleDecode(e.target.value)} /> {error && <div className="alert alert-danger">{error}</div>}
-
-  {header && (
-    <div className="mb-3">
-      <h5 className="d-flex align-items-center justify-content-between">
-        Header
-        <button onClick={() => copyToClipboard(header)} className="btn btn-sm btn-outline-secondary">Copy</button>
-      </h5>
-      <pre className="bg-light p-2 rounded">{header}</pre>
-    </div>
-  )}
-
-  {payload && (
-    <div className="mb-3">
-      <h5 className="d-flex align-items-center justify-content-between">
-        Payload {expired && <span className="badge bg-danger">Expired</span>}
-        <button onClick={() => copyToClipboard(payload)} className="btn btn-sm btn-outline-secondary">Copy</button>
-      </h5>
-      <pre className="bg-light p-2 rounded">{payload}</pre>
-    </div>
-  )}
-
-  {signature && (
-    <div className="mb-3">
-      <h5 className="d-flex align-items-center justify-content-between">
-        Signature
-        <button onClick={() => copyToClipboard(signature)} className="btn btn-sm btn-outline-secondary">Copy</button>
-      </h5>
-      <pre className="bg-light p-2 rounded">{signature}</pre>
-    </div>
-  )}
-</div>
-
-); };
 
 export default JwtDecoder;

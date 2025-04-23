@@ -34,7 +34,7 @@ const Home = () => {
           <div className="card shadow-sm h-100">
             <div className="card-body d-flex flex-column">
               <h5 className="card-title">JWT Decoder</h5>
-              <p className="card-text text-muted">Test and validate regular expressions with ease.</p>
+              <p className="card-text text-muted">Decode and inspect your JWTs, Explore headers, payloads, and more</p>
               <Link to="/jwt-decoder" className="btn btn-primary mt-auto">Launch</Link>
             </div>
           </div>
