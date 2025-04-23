@@ -30,6 +30,16 @@ const Home = () => {
           </div>
         </div>
 
+        <div className="col-md-6 col-lg-4 mb-4">
+          <div className="card shadow-sm h-100">
+            <div className="card-body d-flex flex-column">
+              <h5 className="card-title">JWT Decoder</h5>
+              <p className="card-text text-muted">Test and validate regular expressions with ease.</p>
+              <Link to="/jwt-decoder" className="btn btn-primary mt-auto">Launch</Link>
+            </div>
+          </div>
+        </div>
+
 
         {/* Placeholder for future tools */}
         <div className="col-md-6 col-lg-4 mb-4">
