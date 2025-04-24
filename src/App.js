@@ -4,6 +4,7 @@ import ApiTester from "./components/ApiTester";
 import Home from "./components/Home";
 import RegexTester from "./components/RegexTester";
 import JwtDecoder from "./components/JWTDecoder";
+import JsonFormatter from "./components/JSONFormatter";
 
 function App() {
   return (
@@ -31,6 +32,11 @@ function App() {
                     JWT Decoder
                   </Link>
                 </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/json-formatter">
+                    JSON Formatter
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
@@ -42,6 +48,7 @@ function App() {
             <Route path="/api-tester" element={<ApiTester />} />
             <Route path="/regex-tester" element={<RegexTester />} />
             <Route path="/jwt-decoder" element={<JwtDecoder />} />
+            <Route path="/json-formatter" element={<JsonFormatter/>} />
           </Routes>
         </div>
       </div>

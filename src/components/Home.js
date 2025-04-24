@@ -55,6 +55,20 @@ const Home = () => {
           </div>
         </div>
 
+        <div className="col-md-6 col-lg-4 mb-4">
+          <div className="card shadow-sm h-100">
+            <div className="card-body d-flex flex-column">
+              <h5 className="card-title">JSON Formatter</h5>
+              <p className="card-text text-muted">
+                A handy tool to format, minify, and verify JSON with real-time error checking.
+              </p>
+              <Link to="/json-formatter" className="btn btn-primary mt-auto">
+                Launch
+              </Link>
+            </div>
+          </div>
+        </div>
+
         {/* Placeholder for future tools */}
         <div className="col-md-6 col-lg-4 mb-4">
           <div className="card shadow-sm h-100">
