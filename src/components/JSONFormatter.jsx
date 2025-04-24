@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Ajv from "ajv";
 import { JSONPath } from "jsonpath-plus";
-import addFormats from "ajv-formats"; // Import addFormats
+import addFormats from "ajv-formats";
 
 const JsonFormatter = () => {
   const [input, setInput] = useState("");
@@ -13,14 +13,11 @@ const JsonFormatter = () => {
   const [validationError, setValidationError] = useState(null);
   const [jsonPathQuery, setJsonPathQuery] = useState("");
   const [jsonPathResult, setJsonPathResult] = useState([]);
-  const [schemaValid, setSchemaValid] = useState(null); // State for schema validity message
-
-  // const ajv = new Ajv(); // Initialize Ajv instance
-  // addFormats(ajv); // Add formats support (e.g., email)
+  const [schemaValid, setSchemaValid] = useState(null);
 
   const handleFormat = useCallback(() => {
     const ajv = new Ajv();
-  addFormats(ajv);
+    addFormats(ajv);
     if (!input.trim()) {
       setFormatted("");
       setError(null);
@@ -135,9 +132,7 @@ const JsonFormatter = () => {
 
       {/* Banner for schema validity */}
       {schemaValid === true && (
-        <div className="alert alert-success">
-          ✅ JSON matches the schema!
-        </div>
+        <div className="alert alert-success">✅ JSON matches the schema!</div>
       )}
       {schemaValid === false && (
         <div className="alert alert-danger">
