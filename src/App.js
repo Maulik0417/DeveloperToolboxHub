@@ -9,24 +9,32 @@ function App() {
   return (
     <Router>
       <div>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div className="container">
-    <Link className="navbar-brand" to="/">Dev Toolbox</Link>
-    <div className="collapse navbar-collapse">
-      <ul className="navbar-nav ms-auto">
-        <li className="nav-item">
-          <Link className="nav-link" to="/api-tester">REST API Tester</Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link" to="/regex-tester">Regex Tester</Link> 
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link" to="/jwt-decoder">JWT Decoder</Link> 
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+          <div className="container">
+            <Link className="navbar-brand" to="/">
+              Dev Toolbox
+            </Link>
+            <div className="collapse navbar-collapse">
+              <ul className="navbar-nav ms-auto">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/api-tester">
+                    REST API Tester
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/regex-tester">
+                    Regex Tester
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/jwt-decoder">
+                    JWT Decoder
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
 
         <div className="p-4">
           <Routes>

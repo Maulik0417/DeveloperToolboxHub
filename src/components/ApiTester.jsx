@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const parseHeadersArrayToObject = (headersArray) => {
   const headers = {};
@@ -23,7 +23,6 @@ const ApiTester = () => {
     const saved = localStorage.getItem("apiRequestHistory");
     return saved ? JSON.parse(saved) : [];
   });
-
 
   const copyToClipboard = () => {
     if (response?.data) {
@@ -65,7 +64,9 @@ const ApiTester = () => {
       try {
         const imported = JSON.parse(event.target.result);
         if (Array.isArray(imported)) {
-          const valid = imported.filter(req => req.url && req.url.startsWith("http"));
+          const valid = imported.filter(
+            (req) => req.url && req.url.startsWith("http")
+          );
           const updated = [...history, ...valid];
           setHistory(updated);
           localStorage.setItem("apiRequestHistory", JSON.stringify(updated));
@@ -93,7 +94,9 @@ const ApiTester = () => {
         method,
         url,
         headers: parseHeadersArrayToObject(headers),
-        data: ["POST", "PUT", "PATCH"].includes(method) ? JSON.parse(body || "{}") : undefined,
+        data: ["POST", "PUT", "PATCH"].includes(method)
+          ? JSON.parse(body || "{}")
+          : undefined,
       };
 
       const res = await axios(config);
@@ -114,7 +117,10 @@ const ApiTester = () => {
       setLoading(false);
     }
 
-    const newHistory = [{ url, method, headers: parseHeadersArrayToObject(headers), body }, ...history].slice(0, 10);
+    const newHistory = [
+      { url, method, headers: parseHeadersArrayToObject(headers), body },
+      ...history,
+    ].slice(0, 10);
     setHistory(newHistory);
     localStorage.setItem("apiRequestHistory", JSON.stringify(newHistory));
   };
@@ -135,19 +141,36 @@ const ApiTester = () => {
 
       <div className="mb-3">
         <label className="form-label">📤 Import Requests:</label>
-        <input className="form-control" type="file" accept=".json" onChange={importRequests} />
+        <input
+          className="form-control"
+          type="file"
+          accept=".json"
+          onChange={importRequests}
+        />
       </div>
 
       <div className="mb-3">
         <label className="form-label">URL:</label>
-        <input className="form-control" type="text" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://api.example.com/endpoint" />
+        <input
+          className="form-control"
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="https://api.example.com/endpoint"
+        />
       </div>
 
       <div className="mb-3">
         <label className="form-label">Method:</label>
-        <select className="form-select" value={method} onChange={(e) => setMethod(e.target.value)}>
+        <select
+          className="form-select"
+          value={method}
+          onChange={(e) => setMethod(e.target.value)}
+        >
           {["GET", "POST", "PUT", "PATCH", "DELETE"].map((m) => (
-            <option key={m} value={m}>{m}</option>
+            <option key={m} value={m}>
+              {m}
+            </option>
           ))}
         </select>
       </div>
@@ -157,24 +180,50 @@ const ApiTester = () => {
         {headers.map((h, i) => (
           <div className="row g-2 mb-2" key={i}>
             <div className="col">
-              <input className="form-control" placeholder="Key" value={h.key} onChange={(e) => updateHeader(i, "key", e.target.value)} />
+              <input
+                className="form-control"
+                placeholder="Key"
+                value={h.key}
+                onChange={(e) => updateHeader(i, "key", e.target.value)}
+              />
             </div>
             <div className="col">
-              <input className="form-control" placeholder="Value" value={h.value} onChange={(e) => updateHeader(i, "value", e.target.value)} />
+              <input
+                className="form-control"
+                placeholder="Value"
+                value={h.value}
+                onChange={(e) => updateHeader(i, "value", e.target.value)}
+              />
             </div>
           </div>
         ))}
-        <button className="btn btn-outline-secondary btn-sm" type="button" onClick={addHeaderRow}>+ Add Header</button>
+        <button
+          className="btn btn-outline-secondary btn-sm"
+          type="button"
+          onClick={addHeaderRow}
+        >
+          + Add Header
+        </button>
       </div>
 
       {(method === "POST" || method === "PUT" || method === "PATCH") && (
         <div className="mb-3">
           <label className="form-label">Body (JSON):</label>
-          <textarea className="form-control" rows="5" value={body} onChange={(e) => setBody(e.target.value)} placeholder='{"key": "value"}' />
+          <textarea
+            className="form-control"
+            rows="5"
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            placeholder='{"key": "value"}'
+          />
         </div>
       )}
 
-      <button className="btn btn-primary mb-4" onClick={sendRequest} disabled={loading}>
+      <button
+        className="btn btn-primary mb-4"
+        onClick={sendRequest}
+        disabled={loading}
+      >
         {loading ? "Sending..." : "Send Request"}
       </button>
 
@@ -187,9 +236,26 @@ const ApiTester = () => {
             <p>⏱ Time: {response.duration} ms</p>
             <p>📦 Size: {response.size} bytes</p>
             <div className="mb-2">
-              <button className="btn btn-outline-secondary btn-sm me-2" onClick={copyToClipboard}>📋 Copy Response</button>
-              <button className="btn btn-outline-secondary btn-sm me-2" onClick={() => navigator.clipboard.writeText(generateCurlCommand())}>📋 Copy curl</button>
-              <button className="btn btn-outline-secondary btn-sm" onClick={exportRequests}>⬇️ Export Requests</button>
+              <button
+                className="btn btn-outline-secondary btn-sm me-2"
+                onClick={copyToClipboard}
+              >
+                📋 Copy Response
+              </button>
+              <button
+                className="btn btn-outline-secondary btn-sm me-2"
+                onClick={() =>
+                  navigator.clipboard.writeText(generateCurlCommand())
+                }
+              >
+                📋 Copy curl
+              </button>
+              <button
+                className="btn btn-outline-secondary btn-sm"
+                onClick={exportRequests}
+              >
+                ⬇️ Export Requests
+              </button>
             </div>
             <SyntaxHighlighter language="json" style={oneDark}>
               {JSON.stringify(response.data, null, 2)}
@@ -203,19 +269,27 @@ const ApiTester = () => {
         <ul className="list-group">
           {history.map((h, i) => (
             <li key={i} className="list-group-item">
-              <button className="btn btn-link" onClick={() => {
-                setUrl(h.url);
-                setMethod(h.method);
-                setHeaders(Object.entries(h.headers || {}).map(([key, value]) => ({ key, value })));
-                setBody(h.body || "");
-              }}>
+              <button
+                className="btn btn-link"
+                onClick={() => {
+                  setUrl(h.url);
+                  setMethod(h.method);
+                  setHeaders(
+                    Object.entries(h.headers || {}).map(([key, value]) => ({
+                      key,
+                      value,
+                    }))
+                  );
+                  setBody(h.body || "");
+                }}
+              >
                 {h.method} {h.url}
               </button>
             </li>
           ))}
         </ul>
 
-                <button
+        <button
           type="button"
           onClick={() => {
             setHistory([]); // Clear history from state
@@ -228,7 +302,7 @@ const ApiTester = () => {
             padding: "0.5rem 1rem",
             border: "none",
             borderRadius: "4px",
-            cursor: "pointer"
+            cursor: "pointer",
           }}
         >
           Clear History

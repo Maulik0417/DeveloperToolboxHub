@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const JwtDecoder = () => {
-  const [jwt, setJwt] = useState('');
+  const [jwt, setJwt] = useState("");
   const [decoded, setDecoded] = useState(null);
-  const [error, setError] = useState('');
-  const [copyMessage, setCopyMessage] = useState('');
+  const [error, setError] = useState("");
+  const [copyMessage, setCopyMessage] = useState("");
   const [expectedClaims, setExpectedClaims] = useState({
-    iss: '',
-    aud: ''
+    iss: "",
+    aud: "",
   });
 
   const base64UrlDecode = (str) => {
-    let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    let base64 = str.replace(/-/g, "+").replace(/_/g, "/");
     const pad = base64.length % 4;
     if (pad) {
-      base64 += '='.repeat(4 - pad);
+      base64 += "=".repeat(4 - pad);
     }
     return atob(base64);
   };
 
   const decodeJwt = (token) => {
-    const parts = token.split('.');
+    const parts = token.split(".");
     if (parts.length !== 3) {
-      setError('Invalid JWT format. It must have 3 parts.');
+      setError("Invalid JWT format. It must have 3 parts.");
       return;
     }
 
@@ -39,11 +39,11 @@ const JwtDecoder = () => {
         header: decodedHeader,
         payload: decodedPayload,
         expirationDate,
-        signature
+        signature,
       });
-      setError('');
+      setError("");
     } catch (err) {
-      setError('Failed to decode JWT. Please check the token format.');
+      setError("Failed to decode JWT. Please check the token format.");
     }
   };
 
@@ -64,24 +64,24 @@ const JwtDecoder = () => {
 
   const handleCopy = (data) => {
     navigator.clipboard.writeText(data).then(() => {
-      setCopyMessage('Copied to clipboard!');
-      setTimeout(() => setCopyMessage(''), 2000);
+      setCopyMessage("Copied to clipboard!");
+      setTimeout(() => setCopyMessage(""), 2000);
     });
   };
 
   const handleCompact = () => {
     if (decoded) {
       const header = btoa(JSON.stringify(decoded.header))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '');
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
       const payload = btoa(JSON.stringify(decoded.payload))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '');
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
       return `${header}.${payload}.${decoded.signature}`;
     }
-    return '';
+    return "";
   };
 
   return (
@@ -112,7 +112,9 @@ const JwtDecoder = () => {
             <pre>{JSON.stringify(decoded.header, null, 2)}</pre>
             <button
               className="btn btn-secondary"
-              onClick={() => handleCopy(JSON.stringify(decoded.header, null, 2))}
+              onClick={() =>
+                handleCopy(JSON.stringify(decoded.header, null, 2))
+              }
             >
               Copy Header
             </button>
@@ -123,7 +125,9 @@ const JwtDecoder = () => {
             <pre>{JSON.stringify(decoded.payload, null, 2)}</pre>
             <button
               className="btn btn-secondary"
-              onClick={() => handleCopy(JSON.stringify(decoded.payload, null, 2))}
+              onClick={() =>
+                handleCopy(JSON.stringify(decoded.payload, null, 2))
+              }
             >
               Copy Payload
             </button>
@@ -138,7 +142,9 @@ const JwtDecoder = () => {
             )}
           </div>
 
-          {copyMessage && <div className="alert alert-success mt-3">{copyMessage}</div>}
+          {copyMessage && (
+            <div className="alert alert-success mt-3">{copyMessage}</div>
+          )}
 
           <div className="mt-4">
             <h5>Compact Token:</h5>
@@ -158,7 +164,7 @@ const JwtDecoder = () => {
                 }
                 placeholder="Issuer (iss)"
               />
-              {handleClaimValidation('iss', expectedClaims.iss) ? (
+              {handleClaimValidation("iss", expectedClaims.iss) ? (
                 <p className="text-success">Issuer matches</p>
               ) : (
                 <p className="text-danger">Issuer does not match</p>
@@ -176,7 +182,7 @@ const JwtDecoder = () => {
                 }
                 placeholder="Audience (aud)"
               />
-              {handleClaimValidation('aud', expectedClaims.aud) ? (
+              {handleClaimValidation("aud", expectedClaims.aud) ? (
                 <p className="text-success">Audience matches</p>
               ) : (
                 <p className="text-danger">Audience does not match</p>
